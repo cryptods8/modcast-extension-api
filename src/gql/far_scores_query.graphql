@@ -1,0 +1,16 @@
+query FarScoresQuery($handle: String!) {
+  Socials(
+    input: {
+      filter: { profileName: { _eq: $handle }, dappName: { _eq: farcaster } }
+      blockchain: ethereum
+    }
+  ) {
+    Social {
+      profileName
+      socialCapital {
+        socialCapitalRank
+        socialCapitalScore
+      }
+    }
+  }
+}

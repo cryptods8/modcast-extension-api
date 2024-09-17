@@ -1,0 +1,100 @@
+query CastAndReplyEarningsByHashQuery($hash: String!) {
+  FarcasterReplies(
+    input: { filter: { hash: { _eq: $hash } }, blockchain: ALL }
+  ) {
+    Reply {
+      castedBy {
+        userId
+        fnames
+        profileImage
+      }
+      channel {
+        name
+        imageUrl
+      }
+      moxieEarningsSplit {
+        earnerType
+        earningsAmount
+      }
+    }
+  }
+  FarcasterCasts(input: { filter: { hash: { _eq: $hash } }, blockchain: ALL }) {
+    Cast {
+      castedBy {
+        userId
+        fnames
+        profileImage
+      }
+      channel {
+        name
+        imageUrl
+      }
+      moxieEarningsSplit {
+        earnerType
+        earningsAmount
+      }
+    }
+  }
+}
+
+query CastEarningsByHashQuery($hash: String!) {
+  FarcasterCasts(input: { filter: { hash: { _eq: $hash } }, blockchain: ALL }) {
+    Cast {
+      castedBy {
+        userId
+        fnames
+        profileImage
+      }
+      channel {
+        name
+        imageUrl
+      }
+      moxieEarningsSplit {
+        earnerType
+        earningsAmount
+      }
+    }
+  }
+}
+
+query ReplyEarningsByHashQuery($hash: String!) {
+  FarcasterReplies(
+    input: { filter: { hash: { _eq: $hash } }, blockchain: ALL }
+  ) {
+    Reply {
+      castedBy {
+        userId
+        fnames
+        profileImage
+      }
+      channel {
+        name
+        imageUrl
+      }
+      moxieEarningsSplit {
+        earnerType
+        earningsAmount
+      }
+    }
+  }
+}
+
+query CastEarningsByUrlQuery($url: String!) {
+  FarcasterCasts(input: { filter: { url: { _eq: $url } }, blockchain: ALL }) {
+    Cast {
+      castedBy {
+        userId
+        fnames
+        profileImage
+      }
+      channel {
+        name
+        imageUrl
+      }
+      moxieEarningsSplit {
+        earnerType
+        earningsAmount
+      }
+    }
+  }
+}

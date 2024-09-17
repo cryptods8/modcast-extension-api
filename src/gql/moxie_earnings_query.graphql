@@ -1,0 +1,42 @@
+query MoxieEarningsQuery($fid: String!) {
+  today: FarcasterMoxieEarningStats(
+    input: {
+      filter: { entityType: { _eq: USER }, entityId: { _eq: $fid } }
+      blockchain: ALL
+      timeframe: TODAY
+    }
+  ) {
+    FarcasterMoxieEarningStat {
+      ...FarcasterMoxieEarningStatFragment
+    }
+  }
+  weekly: FarcasterMoxieEarningStats(
+    input: {
+      timeframe: WEEKLY
+      blockchain: ALL
+      filter: { entityType: { _eq: USER }, entityId: { _eq: $fid } }
+    }
+  ) {
+    FarcasterMoxieEarningStat {
+      ...FarcasterMoxieEarningStatFragment
+    }
+  }
+  lifetime: FarcasterMoxieEarningStats(
+    input: {
+      timeframe: LIFETIME
+      blockchain: ALL
+      filter: { entityType: { _eq: USER }, entityId: { _eq: $fid } }
+    }
+  ) {
+    FarcasterMoxieEarningStat {
+      ...FarcasterMoxieEarningStatFragment
+    }
+  }
+}
+
+fragment FarcasterMoxieEarningStatFragment on FarcasterMoxieEarningStat {
+  allEarningsAmount
+  castEarningsAmount
+  frameDevEarningsAmount
+  otherEarningsAmount
+}

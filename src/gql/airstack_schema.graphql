@@ -1,0 +1,154 @@
+schema {
+  query: Query
+}
+
+scalar Map
+
+type Query {
+  FarcasterMoxieEarningStats(
+    input: FarcasterMoxieEarningStatsInput!
+  ): FarcasterMoxieEarningStatOutput!
+  Socials(input: SocialsInput!): SocialsOutput!
+  FarcasterCasts(input: FarcasterCastsInput!): FarcasterCastsOutput!
+  FarcasterReplies(input: FarcasterRepliesInput!): FarcasterRepliesOutput!
+}
+
+input FarcasterCastsInput {
+  filter: FarcasterCastsFilterInput!
+  blockchain: Blockchain!
+}
+
+input FarcasterCastsFilterInput {
+  hash: StringFilterInput
+  url: StringFilterInput
+}
+
+input FarcasterRepliesInput {
+  filter: FarcasterRepliesFilterInput!
+  blockchain: Blockchain!
+}
+
+input FarcasterRepliesFilterInput {
+  hash: StringFilterInput!
+}
+
+type FarcasterCastsOutput {
+  Cast: [FarcasterCast!]!
+}
+
+type FarcasterRepliesOutput {
+  Reply: [FarcasterCast!]!
+}
+
+type FarcasterCast {
+  hash: String!
+  embeds: [Map!]!
+  castedBy: FarcasterCastCreator!
+  channel: FarcasterChannel
+  moxieEarningsSplit: [MoxieEarningsSplit!]!
+}
+
+type FarcasterCastCreator {
+  userId: String!
+  profileImage: String
+  fnames: [String!]!
+}
+
+type FarcasterChannel {
+  name: String!
+  imageUrl: String
+}
+
+enum MoxieEarnerType {
+  CHANNEL_FANS
+  CREATOR
+  NETWORK
+  CREATOR_FANS
+  USER_UNSPLIT
+}
+
+type MoxieEarningsSplit {
+  earnerType: String!
+  earningsAmount: Float!
+}
+
+type FarcasterCastEmbed {
+  url: String
+}
+
+enum Timeframe {
+  TODAY
+  WEEKLY
+  LIFETIME
+}
+
+enum Blockchain {
+  ALL
+  ethereum
+}
+
+enum EntityType {
+  USER
+}
+
+input SocialsInput {
+  filter: SocialsFilter!
+  blockchain: Blockchain!
+}
+
+enum DappName {
+  farcaster
+}
+
+input DappNameFilterInput {
+  _eq: DappName!
+}
+
+input SocialsFilter {
+  profileName: StringFilterInput!
+  dappName: DappNameFilterInput!
+}
+
+type SocialsOutput {
+  Social: [Social!]!
+}
+
+type Social {
+  profileName: String!
+  socialCapital: SocialCapital!
+}
+
+type SocialCapital {
+  socialCapitalRank: Int!
+  socialCapitalScore: Float!
+}
+
+input FarcasterMoxieEarningStatsInput {
+  timeframe: Timeframe!
+  blockchain: Blockchain!
+  filter: FarcasterMoxieEarningStatsFilter!
+}
+
+input EntityTypeFilterInput {
+  _eq: EntityType!
+}
+input StringFilterInput {
+  _eq: String!
+}
+
+input FarcasterMoxieEarningStatsFilter {
+  entityType: EntityTypeFilterInput
+  entityId: StringFilterInput
+}
+
+type FarcasterMoxieEarningStatOutput {
+  FarcasterMoxieEarningStat: [FarcasterMoxieEarningStat!]!
+}
+
+type FarcasterMoxieEarningStat {
+  allEarningsAmount: Float!
+  castEarningsAmount: Float!
+  frameDevEarningsAmount: Float!
+  otherEarningsAmount: Float!
+  entityId: String!
+}
