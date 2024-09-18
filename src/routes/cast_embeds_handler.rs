@@ -6,10 +6,13 @@ use axum::{
     Json,
 };
 use graphql_client::{GraphQLQuery, Response};
-use serde::{de::DeserializeOwned, Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
-use crate::routes::{config::Config, fetch_cast_from_neynar::fetch_cast_from_neynar};
+use crate::{
+    airstack::fetch_query,
+    routes::{config::Config, fetch_cast_from_neynar::fetch_cast_from_neynar},
+};
 
 #[derive(Deserialize, Debug, Clone)]
 #[serde(rename_all = "lowercase")]
@@ -46,42 +49,14 @@ pub async fn get_cast_embeds(
 
     let embeds = fetch_embeds(params, &config).await?;
 
-    Ok(Json(json!({ "data": embeds })))
+    Ok(Json(
+        json!({ "data": embeds.map(|e| json!({ "embeds": e })).or(None) }),
+    ))
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct Embed {
     pub url: Option<String>,
-}
-
-async fn fetch_query<IT: ?Sized + Serialize, OT: DeserializeOwned + Debug>(
-    api_key: String,
-    request_body: &IT,
-) -> Result<OT, reqwest::Error> {
-    let client = reqwest::Client::builder()
-        .user_agent("graphql-rust/0.10.0")
-        .default_headers(
-            std::iter::once((
-                reqwest::header::AUTHORIZATION,
-                reqwest::header::HeaderValue::from_str(&format!("Bearer {}", api_key)).unwrap(),
-            ))
-            .collect(),
-        )
-        .build()
-        .unwrap();
-
-    // log the request_body as json string
-    // println!("request_body: {:?}", serde_json::to_string(request_body).unwrap());
-
-    let res = client
-        .post("https://api.airstack.xyz/gql")
-        .json(&request_body)
-        .send()
-        .await?;
-
-    let value = res.json::<OT>().await?;
-
-    Ok(value)
 }
 
 async fn fetch_embeds(
